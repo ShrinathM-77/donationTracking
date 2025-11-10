@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Tracking Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f8f9fa;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d63384;
+      margin-bottom: 30px;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card h2 {
+      color: #d63384;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .chart-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #d63384;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+      .card h2 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Donation Tracking Dashboard</h1>
+
+  <!-- Top summary section -->
+  <div class="dashboard">
+    <div class="card">
+      <h2 id="totalDonations">$0</h2>
+      <p>Total Donations Received</p>
+    </div>
+    <div class="card">
+      <h2 id="donorCount">0</h2>
+      <p>Number of Donors</p>
+    </div>
+  </div>
+
+  <!-- Chart section -->
+  <div class="chart-container">
+    <canvas id="donationChart"></canvas>
+  </div>
+
+  <!-- Table section -->
+  <table id="donationTable">
+    <thead>
+      <tr>
+        <th>Donor Name</th>
+        <th>Amount ($)</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Dummy donation data
+    const donations = [
+      { name: "Aditya Mule", amount: 100, date: "2025-01-05" },
+      { name: "Ganesh Waghe", amount: 150, date: "2025-02-10" },
+      { name: "Vedant Jadhav", amount: 75, date: "2025-03-15" },
+      { name: "Darshan Chavan", amount: 200, date: "2025-04-05" },
+      { name: "Dashrath Survase", amount: 120, date: "2025-05-12" },
+      { name: "Prem Chavan", amount: 180, date: "2025-06-20" },
+      { name: "Aditya Pawar", amount: 90, date: "2025-07-14" },
+      { name: "Ishan Pandita", amount: 250, date: "2025-08-10" },
+      { name: "Sandy Bhai", amount: 60, date: "2025-09-22" },
+      { name: "Narayan Chavan", amount: 130, date: "2025-10-05" }
+    ];
+
+    // Calculate totals
+    const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
+    const donorCount = donations.length;
+
+    document.getElementById("totalDonations").textContent = `$${totalDonations.toLocaleString()}`;
+    document.getElementById("donorCount").textContent = donorCount;
+
+    // Fill table
+    const tbody = document.querySelector("#donationTable tbody");
+    donations.forEach(d => {
+      const row = `<tr>
+        <td>${d.name}</td>
+        <td>${d.amount}</td>
+        <td>${d.date}</td>
+      </tr>`;
+      tbody.innerHTML += row;
+    });
+
+    // Prepare chart data
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct"];
+    const amounts = [100,150,75,200,120,180,90,250,60,130];
+
+    new Chart(document.getElementById("donationChart"), {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Donations ($)',
+          data: amounts,
+          borderColor: '#d63384',
+          backgroundColor: 'rgba(214,51,132,0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
